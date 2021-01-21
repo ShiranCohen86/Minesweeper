@@ -9,17 +9,23 @@
 </head>
 
 <body onload="init()" oncontextmenu="return false;">
-    <table class="game">
-        <thead class="header-board">
-            <td id="timer"></td>
+    <div class="container">
+        <h1>Mines Sweeper</h1>
+        <div class="header">
+            <div id="flags"></div>
+            <div onclick="restartGame(this)" id="smile"></div>
+            <div id="timer"></div>
+        </div>
+        <table class="game">
+            <tbody class="board">
 
-        </thead>
-        <tbody class="board">
-
-        </tbody>
-    </table>
-
-
+            </tbody>
+        </table>
+        <div id="lives"></div>
+    </div>
+    <button onclick=" init(4)" class="beginer">Beginer</button>
+    <button onclick=" init(8)" class="intermediate">Intermediate</button>
+    <button onclick=" init(12)" class="expert">Expert</button>
     <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
 </body>

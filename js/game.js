@@ -19,6 +19,7 @@ var elSmile = document.getElementById('smile');
 var elFlag = document.getElementById('flags');
 var elBoard = document.querySelector('.board');
 var elLives = document.getElementById('lives');
+var elHints = document.getElementById('hints');
 
 function init(size) {
     clearInterval(gCountTimeInterval);
@@ -29,7 +30,7 @@ function init(size) {
     gSec = 0
     gHour = 0
     gFirstClick = true;
-    gGame = { isWin: false, isOn: true, shownCount: 0, markedCount: 0, secsPassed: 0, lives: 3 }
+    gGame = { isWin: false, isOn: true, shownCount: 0, markedCount: 0, secsPassed: 0, lives: 3, isHint: false, hintCount: 3 }
 
     gLevels = levelGame(size || 4);
     gBoard = buildBoard();
@@ -92,9 +93,9 @@ function renderBoard() {
     elFlag.innerText = gLevels.MINES - gGame.markedCount;
 
     elBoard.innerHTML = strHTML;
+    elHints.innerText = `Press For HINT. You have left: ${gGame.hintCount}`;
 
-
-    elLives.innerHTML = `Lives: ${gGame.lives}`;
+    elLives.innerText = `Lives: ${gGame.lives}`;
 
 };
 
@@ -141,6 +142,12 @@ function cellClicked(idxI, idxJ) {
         gFirstClick = false;
 
     }
+    if (gGame.isHint && gGame.hintCount > 0) {
+        hint(idxI, idxJ);
+        setTimeout(hideHint, 1000, idxI, idxJ);
+        gGame.hintCount--;
+        return
+    }
     if (!gGame.isOn) return;
     if (gBoard[idxI][idxJ].isMarked) return;
     if (gBoard[idxI][idxJ].isShown) return;
@@ -156,7 +163,7 @@ function cellClicked(idxI, idxJ) {
     if (!gBoard[idxI][idxJ].isMine && gBoard[idxI][idxJ].minesAroundCount === 0) {
         for (var i = idxI - 1; i <= idxI + 1; i++) {
             for (var j = idxJ - 1; j <= idxJ + 1; j++) {
-                if (i < 0 || i >= gBoard.length || j < 0 || j >= gBoard[0].length) continue;
+                if (i < 0 || i >= gLevels.SIZE || j < 0 || j >= gLevels.SIZE) continue;
                 if (idxI === i && idxJ === j) continue;
                 if (gBoard[i][j].isMine || gBoard[i][j].isMarked || gBoard[i][j].isShown) continue;
                 gBoard[i][j].isShown = true;
@@ -215,3 +222,29 @@ function levelGame(size) {
 };
 
 
+function hint(idxI, idxJ) {
+    gGame.isHint = true;
+    for (var i = idxI - 1; i <= idxI + 1; i++) {
+        for (var j = idxJ - 1; j <= idxJ + 1; j++) {
+            if (i < 0 || i >= gLevels.SIZE || j < 0 || j >= gLevels.SIZE) continue;
+
+            gBoard[i][j].isShown = true;
+        }
+    }
+    renderBoard();
+}
+function hideHint(idxI, idxJ) {
+    for (var i = idxI - 1; i <= idxI + 1; i++) {
+        for (var j = idxJ - 1; j <= idxJ + 1; j++) {
+            if (i < 0 || i >= gLevels.SIZE || j < 0 || j >= gLevels.SIZE) continue;
+
+            gBoard[i][j].isShown = false;
+        }
+    }
+    gGame.isHint = false;
+    renderBoard();
+}
+
+function markHint() {
+    gGame.isHint = true;
+}

@@ -17,9 +17,9 @@ var gCountTimeInterval;
 var elTimer = document.getElementById('timer');
 var elSmile = document.getElementById('smile');
 var elFlag = document.getElementById('flags');
-var elBoard = document.querySelector('.board');
 var elLives = document.getElementById('lives');
 var elHints = document.getElementById('hints');
+var elBoard = document.querySelector('.board');
 
 function init(size) {
     clearInterval(gCountTimeInterval);
@@ -31,7 +31,6 @@ function init(size) {
     gHour = 0
     gFirstClick = true;
     gGame = { isWin: false, isOn: true, shownCount: 0, markedCount: 0, secsPassed: 0, lives: 3, isHint: false, hintCount: 3 }
-
     gLevels = levelGame(size || 4);
     gBoard = buildBoard();
     renderBoard();
@@ -48,7 +47,8 @@ function buildBoard() {
                 isShown: false,
                 isMine: false,
                 isMarked: false,
-                isMineKill: false
+                isMineKill: false,
+                isTest: false
             };
             board[i][j] = cell;
         }
@@ -143,8 +143,8 @@ function cellClicked(idxI, idxJ) {
 
     }
     if (gGame.isHint && gGame.hintCount > 0) {
-        hint(idxI, idxJ);
-        setTimeout(hideHint, 1000, idxI, idxJ);
+        hint(idxI, idxJ, true);
+        setTimeout(hint, 1000, idxI, idxJ, false);
         gGame.hintCount--;
         return
     }
@@ -217,31 +217,25 @@ function levelGame(size) {
     } else if (size === 8) {
         return { SIZE: 8, MINES: 12 };
     } else if (size === 12) {
-        return { SIZE: 12, MINES: 20 };
+        return { SIZE: 12, MINES: 30 };
     }
 };
 
-
-function hint(idxI, idxJ) {
-    gGame.isHint = true;
+function hint(idxI, idxJ, isShowHint) {
+    if (isShowHint) {
+        gGame.isHint = false;
+    }
     for (var i = idxI - 1; i <= idxI + 1; i++) {
         for (var j = idxJ - 1; j <= idxJ + 1; j++) {
             if (i < 0 || i >= gLevels.SIZE || j < 0 || j >= gLevels.SIZE) continue;
-
-            gBoard[i][j].isShown = true;
+            if (gBoard[i][j].isShown && isShowHint) {
+                gBoard[i][j].isTest = true;
+            }
+            if (!gBoard[i][j].isTest) {
+                gBoard[i][j].isShown = isShowHint;
+            }
         }
     }
-    renderBoard();
-}
-function hideHint(idxI, idxJ) {
-    for (var i = idxI - 1; i <= idxI + 1; i++) {
-        for (var j = idxJ - 1; j <= idxJ + 1; j++) {
-            if (i < 0 || i >= gLevels.SIZE || j < 0 || j >= gLevels.SIZE) continue;
-
-            gBoard[i][j].isShown = false;
-        }
-    }
-    gGame.isHint = false;
     renderBoard();
 }
 

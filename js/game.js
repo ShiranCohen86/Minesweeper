@@ -48,7 +48,7 @@ function buildBoard() {
                 isMine: false,
                 isMarked: false,
                 isMineKill: false,
-                isTest: false
+                isAlreadyShown: false
             };
             board[i][j] = cell;
         }
@@ -229,9 +229,9 @@ function hint(idxI, idxJ, isShowHint) {
         for (var j = idxJ - 1; j <= idxJ + 1; j++) {
             if (i < 0 || i >= gLevels.SIZE || j < 0 || j >= gLevels.SIZE) continue;
             if (gBoard[i][j].isShown && isShowHint) {
-                gBoard[i][j].isTest = true;
+                gBoard[i][j].isAlreadyShown = true;
             }
-            if (!gBoard[i][j].isTest) {
+            if (!gBoard[i][j].isAlreadyShown) {
                 gBoard[i][j].isShown = isShowHint;
             }
         }

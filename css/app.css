@@ -20,8 +20,8 @@ table {
 .cell {
     border: 1px solid #3f3d3d;
     background-color: grey;
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
 }
 
 #lives {

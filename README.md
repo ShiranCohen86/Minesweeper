@@ -1,1 +1,2 @@
-# Sprint-1-20-27
+My first JavaScript vanilla project.
+I had 48 hours for this project.
